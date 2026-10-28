@@ -4,6 +4,7 @@ function App() {
     return (
         <>
             <Testing />
+            <p>Testing part 2. </p>
         </>
     )
 }
