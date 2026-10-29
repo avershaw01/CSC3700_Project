@@ -1,12 +1,7 @@
-import Testing from "./components/Testing.jsx";
+import HomePage from "./pages/HomePage";
 
 function App() {
-    return (
-        <>
-            <Testing />
-            <p>Testing part 2. </p>
-        </>
-    )
+    return <HomePage />;
 }
 
 export default App;
