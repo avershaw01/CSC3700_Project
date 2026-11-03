@@ -20,7 +20,6 @@ json-server --watch db/db.json --port 3333
 Then, open a second terminal in Webstorm
 Be in CSC3700_Project/Project_3700_26
 run the following: {
-`cd src`
 `npm run dev`
 }
 This should install the dependencies (node_modules), start up a makeshift server, and run the program

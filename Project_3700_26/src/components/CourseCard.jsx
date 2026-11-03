@@ -21,7 +21,7 @@ function CourseCard({ course, allCourses, completed, onToggle }) {
     return (
         <div className="card h-100">
             <div className="card-body">
-                <div className="d-flex justify-content-between start">
+                <div className="d-flex justify-content-between align-items-start">
                     <h5 className="card-title">
                         {course.number}: {course.title}
                     </h5>
