@@ -131,6 +131,7 @@ function HomePage() {
 
             <CourseList
                 courses={visibleCourses}
+                allCourses={courses}
                 completed={completed}
                 onToggle={handleToggle}
             />
