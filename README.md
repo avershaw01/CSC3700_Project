@@ -1,5 +1,5 @@
 # CSC3700_Project
-Fall 2026 Project | Andre Vershaw + Gavin Kearns
+Fall 2026 Project | Andre Vershaw & Gavin Kearns
 
 First, cd into the Project_3700_26 directory
 Should be in CSC3700_Project/Project_3700_26
@@ -22,5 +22,6 @@ Be in CSC3700_Project/Project_3700_26
 run the following: {
 `npm run dev`
 }
+
 This should install the dependencies (node_modules), start up a makeshift server, and run the program
 
