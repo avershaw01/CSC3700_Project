@@ -1,11 +1,17 @@
-function CourseCard({ course, allCourses }) {
-    const isCompleted = completed.includes(course.id);
+function CourseCard({ course, allCourses, completed, onToggle }) {
+    const isCompleted = completed.includes(Number(course.id));
     const prereqText =
-        course.prerequisites.length === 0
+        !course.prerequisites || course.prerequisites.length === 0
             ? "None"
             : course.prerequisites
-                .map((id) => allCourses.find((c) => c.id === id)?.number)
-                .join(", ");
+            .map((id) => {
+                const match = allCourses?.find(
+                    (c) => Number(c.id) === Number(id)
+                );
+                return match?.number;
+            })
+            .filter(Boolean)
+            .join(", ") || "None";
     const badgeClass = {
         Completed: "text-bg-success",
         Available: "text-bg-primary",

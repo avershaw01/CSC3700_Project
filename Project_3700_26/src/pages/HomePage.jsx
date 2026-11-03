@@ -1,6 +1,7 @@
 import useFetch from "../hooks/useFetch";
 import { useEffect, useMemo, useState } from "react";
 import CourseList from "../components/CourseList";
+import ProgressSummary from "../components/ProgressSummary";
 
 const API = import.meta.env.VITE_API_BASE_URL;
 const STORAGE_KEY = "aurora-course-scheduler-completed";
@@ -15,44 +16,44 @@ function HomePage() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
                 const parsed = JSON.parse(saved);
-                if (Array.isArray(parsed)) setCompleted(parsed);
-            }
+                // eslint-disable-next-line react-hooks/set-state-in-effect
+                if (Array.isArray(parsed)) setCompleted(parsed.map(Number));            }
         } catch { //Do nothing but don't crash
         }
-    }, []);
+    },  []);
 
     function handleToggle(courseId) {
-        const course = courses.find((item) => item.id === courseId);
+        const id = Number(courseId);
+        const course = courses.find((item) => Number(item.id) === id);
         if (!course) return;
 
         setCompleted((current) => {
-            const isAlreadyCompleted = current.includes(courseId);
+            const isAlreadyCompleted = current.includes(id);
 
             if (isAlreadyCompleted) {
-                const toRemove = new Set([courseId]);
+                const toRemove = new Set([id]);
                 let changed = true;
 
                 while (changed) {
                     changed = false;
-
                     for (const item of courses) {
-                        const dependsOnRemovedCourse = item.prerequisites.some((id) =>
-                            toRemove.has(id),
+                        const dependsOnRemoved = (item.prerequisites || []).some(
+                            (prereqId) => toRemove.has(Number(prereqId)),
                         );
-                        if (dependsOnRemovedCourse && !toRemove.has(item.id)) {
-                            toRemove.add(item.id);
+                        if (dependsOnRemoved && !toRemove.has(Number(item.id))) {
+                            toRemove.add(Number(item.id));
                             changed = true;
                         }
                     }
                 }
-                return current.filter((id) => !toRemove.has(id));
+                return current.filter((completedId) => !toRemove.has(Number(completedId)));
             }
-            const prerequisitesMet = course.prerequisites.every((id) =>
-                current.includes(id),
+            const prerequisitesMet = (course.prerequisites || []).every((prereqId) =>
+                current.includes(Number(prereqId)),
             );
             if (!prerequisitesMet) return current;
 
-            return [...current, courseId];
+            return [...current, id];
         });
     }
 
@@ -64,9 +65,10 @@ function HomePage() {
         if (!courses) return [];
 
         return courses.map((course) => {
-            const isCompleted = completed.includes(course.id);
-            const isAvailable = course.prerequisites.every((id) =>
-                completed.includes(id),
+            const id = Number(course.id);
+            const isCompleted = completed.includes(id);
+            const isAvailable = (course.prerequisites || []).every((prereqId) =>
+                completed.includes(Number(prereqId)),
             );
 
             return {
@@ -101,13 +103,12 @@ function HomePage() {
         <main className="container py-3">
             <h1 className="mb-3">Aurora CS Course Scheduler</h1>
 
-            <section className="mb-3" aria-label="Course progress">
-                <strong>
-                    {completedCount} of {courses.length} courses completed
-                </strong>
-                <span className="ms-3">Available: {availableCount}</span>
-                <span className="ms-3">Locked: {lockedCount}</span>
-            </section>
+            <ProgressSummary
+                completedCount={completedCount}
+                availableCount={availableCount}
+                lockedCount={lockedCount}
+                total={courses.length}
+            />
 
             <div className="d-flex flex-wrap gap-2 mb-3">
                 <label htmlFor="course-filter" className="form-label mb-0">

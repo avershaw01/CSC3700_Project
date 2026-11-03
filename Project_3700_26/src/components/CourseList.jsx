@@ -7,7 +7,7 @@ function CourseList({ courses, allCourses, completed, onToggle }) {
                 <div className="col-md-6" key={course.id}>
                     <CourseCard
                         course={course}
-                        allCourses={courses}
+                        allCourses={allCourses}
                         completed={completed}
                         onToggle={onToggle}
                     />
