@@ -4,23 +4,14 @@ import CourseList from "../components/CourseList";
 import ProgressSummary from "../components/ProgressSummary";
 
 const API = import.meta.env.VITE_API_BASE_URL;
-const STORAGE_KEY = "aurora-course-scheduler-completed";
 
 function HomePage() {
-    const { data: courses, isPending, error } = useFetch(`${API}/courses`);
+    const { data: courses, isPending, error } = useFetch(`${API}/api/courses`);
+    const { data: completions, isPending, error } = useFetch(`${API}/api/completions`);
     const [completed, setCompleted] = useState([]);
     const [filter, setFilter] = useState("all");
 
-    useEffect(() => {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                if (Array.isArray(parsed)) setCompleted(parsed.map(Number));            }
-        } catch { //Do nothing but don't crash
-        }
-    },  []);
+
 
     function handleToggle(courseId) {
         const id = Number(courseId);
@@ -57,9 +48,7 @@ function HomePage() {
         });
     }
 
-    function handleSave() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
-    }
+
 
     const coursesWithStatus = useMemo(() => {
         if (!courses) return [];
