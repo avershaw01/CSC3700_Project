@@ -13,11 +13,8 @@ function HomePage() {
     const [saveMessage, setSaveMessage] = useState("");
 
     useEffect(() => {
-        if (isPending || completionsPending) {
-            return <p className="p-3">Loading courses and progress...</p>;
-        }
-        if (error || completionsError) {
-            return <p className="p-3 text-danger">Error: {error || completionsError}</p>;
+        if (Array.isArray(savedCompletions)) {
+            setCompleted(savedCompletions.map(Number));
         }
     }, [savedCompletions]);
 
@@ -117,6 +114,12 @@ function HomePage() {
     if (isPending) return <p className="p-3">Loading courses...</p>;
     if (error) return <p className="p-3 text-danger">Error: {error}</p>;
 
+    if (isPending || completionsPending) {
+        return <p className="p-3">Loading courses and progress...</p>;
+    }
+    if (error || completionsError) {
+        return <p className="p-3 text-danger">Error: {error || completionsError}</p>;
+    }
     return (
         <main className="container py-3">
             <h1 className="mb-3">Aurora CS Course Scheduler</h1>
