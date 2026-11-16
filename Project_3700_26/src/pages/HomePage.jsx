@@ -7,11 +7,16 @@ const API = import.meta.env.VITE_API_BASE_URL;
 
 function HomePage() {
     const { data: courses, isPending, error } = useFetch(`${API}/api/courses`);
-    const { data: completions, isPending, error } = useFetch(`${API}/api/completions`);
+    const { data: savedCompletions } = useFetch(`${API}/api/completions`);
     const [completed, setCompleted] = useState([]);
     const [filter, setFilter] = useState("all");
+    const [saveMessage, setSaveMessage] = useState("");
 
-
+    useEffect(() => {
+        if (Array.isArray(savedCompletions)) {
+            setCompleted(savedCompletions.map(Number));
+        }
+    }, [savedCompletions]);
 
     function handleToggle(courseId) {
         const id = Number(courseId);
@@ -46,6 +51,27 @@ function HomePage() {
 
             return [...current, id];
         });
+    }
+    async function handleSave() {
+        setSaveMessage("");
+
+        try {
+            const response = await fetch(`${API}/api/completions`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(completed),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Could not save progress.");
+            }
+
+            setSaveMessage("Progress saved.");
+        } catch (err) {
+            setSaveMessage(`Error: ${err.message}`);
+        }
     }
 
 
@@ -117,6 +143,7 @@ function HomePage() {
                 <button className="btn btn-primary" onClick={handleSave}>
                     Save progress
                 </button>
+                {saveMessage && <span role="status">{saveMessage}</span>}
             </div>
 
             <CourseList
