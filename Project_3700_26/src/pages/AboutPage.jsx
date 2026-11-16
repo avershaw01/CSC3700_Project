@@ -3,7 +3,6 @@ function AboutPage() {
     return (
         <main className="container py-4">
             <h1>About</h1>
-            <div></div>
             <p><strong>Authors:</strong> Gavin K. & Andre V.</p>
             <p><strong>Date:</strong> {date}</p>
             <p><strong>Version:</strong> 2.0.0</p>
