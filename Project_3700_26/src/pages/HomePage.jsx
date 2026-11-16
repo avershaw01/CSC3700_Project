@@ -7,14 +7,17 @@ const API = import.meta.env.VITE_API_BASE_URL;
 
 function HomePage() {
     const { data: courses, isPending, error } = useFetch(`${API}/api/courses`);
-    const { data: savedCompletions } = useFetch(`${API}/api/completions`);
+    const { data: savedCompletions, isPending: completionsPending, error: completionsError } = useFetch(`${API}/api/completions`);
     const [completed, setCompleted] = useState([]);
     const [filter, setFilter] = useState("all");
     const [saveMessage, setSaveMessage] = useState("");
 
     useEffect(() => {
-        if (Array.isArray(savedCompletions)) {
-            setCompleted(savedCompletions.map(Number));
+        if (isPending || completionsPending) {
+            return <p className="p-3">Loading courses and progress...</p>;
+        }
+        if (error || completionsError) {
+            return <p className="p-3 text-danger">Error: {error || completionsError}</p>;
         }
     }, [savedCompletions]);
 
