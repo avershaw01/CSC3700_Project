@@ -1,6 +1,5 @@
-// util/validateCourse.js
 function validateCourse(body) {
-    const { number, title, credits } = body;
+    const {number, title, credits} = body;
 
     if (!number || !title) {
         return 'number and title are required';

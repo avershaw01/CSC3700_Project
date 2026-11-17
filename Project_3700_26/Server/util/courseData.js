@@ -1,6 +1,3 @@
-// server/util/courseData.js
-// GIVEN CODE -- use as written
-
 async function getCoursesWithPrereqs(pool, id) {
     let courses;
     if (id === undefined) {
@@ -32,4 +29,4 @@ async function replaceCompletions(pool, userId, courseIds) {
     }
 }
 
-module.exports = { getCoursesWithPrereqs, replaceCompletions };
+module.exports = {getCoursesWithPrereqs, replaceCompletions};
