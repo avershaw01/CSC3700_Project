@@ -1,0 +1,60 @@
+@baseUrl = http://localhost:3000/api
+
+### GET all courses
+GET {{baseUrl}}/courses
+
+### GET one course
+GET {{baseUrl}}/courses/1
+
+### GET 404
+GET {{baseUrl}}/courses/999
+
+### POST new course
+POST {{baseUrl}}/courses
+Content-Type: application/json
+
+{
+  "number": "CSC4600",
+  "title": "Cloud Computing",
+  "credits": 3,
+  "description": "Test course",
+  "prerequisites": [5, 9]
+}
+
+### POST 400 (missing fields)
+POST {{baseUrl}}/courses
+Content-Type: application/json
+
+{
+  "title": "Missing number"
+}
+
+### PUT update course
+PUT {{baseUrl}}/courses/7
+Content-Type: application/json
+
+{
+  "number": "CSC3700",
+  "title": "Advanced Web Application Development",
+  "credits": 3,
+  "description": "Updated",
+  "prerequisites": [3, 5]
+}
+
+### DELETE course
+DELETE {{baseUrl}}/courses/11
+
+### GET completions
+GET {{baseUrl}}/completions
+
+### PUT completions (valid)
+PUT {{baseUrl}}/completions
+Content-Type: application/json
+
+[1, 3, 2]
+
+### PUT completions (invalid prereqs) -- should 400
+PUT {{baseUrl}}/completions
+Content-Type: application/json
+
+[10]

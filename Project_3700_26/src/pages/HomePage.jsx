@@ -4,23 +4,19 @@ import CourseList from "../components/CourseList";
 import ProgressSummary from "../components/ProgressSummary";
 
 const API = import.meta.env.VITE_API_BASE_URL;
-const STORAGE_KEY = "aurora-course-scheduler-completed";
 
 function HomePage() {
-    const { data: courses, isPending, error } = useFetch(`${API}/courses`);
+    const { data: courses, isPending, error } = useFetch(`${API}/api/courses`);
+    const { data: savedCompletions, isPending: completionsPending, error: completionsError } = useFetch(`${API}/api/completions`);
     const [completed, setCompleted] = useState([]);
     const [filter, setFilter] = useState("all");
+    const [saveMessage, setSaveMessage] = useState("");
 
     useEffect(() => {
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                // eslint-disable-next-line react-hooks/set-state-in-effect
-                if (Array.isArray(parsed)) setCompleted(parsed.map(Number));            }
-        } catch { //Do nothing but don't crash
+        if (Array.isArray(savedCompletions)) {
+            setCompleted(savedCompletions.map(Number));
         }
-    },  []);
+    }, [savedCompletions]);
 
     function handleToggle(courseId) {
         const id = Number(courseId);
@@ -56,10 +52,29 @@ function HomePage() {
             return [...current, id];
         });
     }
+    async function handleSave() {
+        setSaveMessage("");
 
-    function handleSave() {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(completed));
+        try {
+            const response = await fetch(`${API}/api/completions`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(completed),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || "Could not save progress.");
+            }
+
+            setSaveMessage("Progress saved.");
+        } catch (err) {
+            setSaveMessage(`Error: ${err.message}`);
+        }
     }
+
+
 
     const coursesWithStatus = useMemo(() => {
         if (!courses) return [];
@@ -99,6 +114,12 @@ function HomePage() {
     if (isPending) return <p className="p-3">Loading courses...</p>;
     if (error) return <p className="p-3 text-danger">Error: {error}</p>;
 
+    if (isPending || completionsPending) {
+        return <p className="p-3">Loading courses and progress...</p>;
+    }
+    if (error || completionsError) {
+        return <p className="p-3 text-danger">Error: {error || completionsError}</p>;
+    }
     return (
         <main className="container py-3">
             <h1 className="mb-3">Aurora CS Course Scheduler</h1>
@@ -128,6 +149,7 @@ function HomePage() {
                 <button className="btn btn-primary" onClick={handleSave}>
                     Save progress
                 </button>
+                {saveMessage && <span role="status">{saveMessage}</span>}
             </div>
 
             <CourseList

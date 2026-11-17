@@ -1,11 +1,11 @@
 function AboutPage() {
-    const date = "November 2nd, 2026"
+    const date = "November 16th, 2026"
     return (
         <main className="container py-4">
             <h1>About</h1>
-            <p><strong>Author:</strong> Gavin K. & Andre V.</p>
+            <p><strong>Authors:</strong> Gavin K. & Andre V.</p>
             <p><strong>Date:</strong> {date}</p>
-            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Version:</strong> 2.0.0</p>
         </main>
     );
 }
